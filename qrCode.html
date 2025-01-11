@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QR Code and Barcode Generator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin-top: 20px;
+    }
+    .container {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 20px;
+      margin-top: 20px;
+    }
+    .item {
+      border: 1px solid #ddd;
+      padding: 10px;
+      border-radius: 5px;
+      width: 250px;
+      text-align: center;
+    }
+    .item canvas, .item img {
+      margin: 10px auto;
+    }
+  </style>
+</head>
+<body>
+  <h1>QR Code and Barcode Generator</h1>
+  <textarea id="values" rows="5" cols="50" placeholder="Enter values separated by commas"></textarea>
+  <br />
+  <button onclick="generateCodes()">Generate Codes</button>
+  <div class="container" id="output"></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+  <script>
+    function generateCodes() {
+      const output = document.getElementById("output");
+      output.innerHTML = ""; // Clear previous codes
+      const values = document.getElementById("values").value.split(",");
+
+      if (values.length > 0) {
+        values.forEach(value => {
+          const trimmedValue = value.trim();
+          if (trimmedValue) {
+            const item = document.createElement("div");
+            item.className = "item";
+
+            // Create QR Code
+            const qrDiv = document.createElement("div");
+            new QRCode(qrDiv, {
+              text: trimmedValue,
+              width: 100,
+              height: 100,
+            });
+
+            // Create Barcode
+            const barcodeCanvas = document.createElement("canvas");
+            JsBarcode(barcodeCanvas, trimmedValue, {
+              format: "CODE128",
+              width: 2,
+              height: 50,
+              displayValue: true,
+            });
+
+            item.appendChild(qrDiv);
+            item.appendChild(barcodeCanvas);
+            output.appendChild(item);
+          }
+        });
+      } else {
+        alert("Please enter values separated by commas.");
+      }
+    }
+  </script>
+</body>
+</html>
